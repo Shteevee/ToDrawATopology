@@ -8,7 +8,11 @@ bl_info = {
     "category": "Development",
 }
 
+import sys
+sys.path.append("../")
+
 import bpy
+from render_freestyle_svg import *
 from .export_vector_operator import ExportVectorOperator
 
 def register():
