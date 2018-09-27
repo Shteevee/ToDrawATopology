@@ -12,14 +12,13 @@ import sys
 sys.path.append("../")
 
 import bpy
-from render_freestyle_svg import *
-from .export_vector_operator import ExportVectorOperator
+from .export_components_operator import ExportComponentImagesOperator
 
 def register():
-    bpy.utils.register_class(ExportVectorOperator)
+    bpy.utils.register_class(ExportComponentImagesOperator)
 
 def unregister():
-    bpy.utils.unregister_class(ExportVectorOperator)
+    bpy.utils.unregister_class(ExportComponentImagesOperator)
 
 if __name__ == "__main__":
     register()
