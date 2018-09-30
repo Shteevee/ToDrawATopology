@@ -15,6 +15,7 @@ class ExportComponentImagesOperator(bpy.types.Operator):
 
         #set export files to PNG
         scene.render.image_settings.file_format='PNG'
+        #scene.render.resolution_percentage = 100
 
         #delete existing nodes
         for node in tree.nodes:
@@ -34,19 +35,19 @@ class ExportComponentImagesOperator(bpy.types.Operator):
 
         viewer_link = links.new(render_layers_node.outputs['Image'], viewer_node.inputs[0])
         self.update_display(scene, viewer_node)
-        bpy.data.images['Viewer Node'].save_render("Original.png")
+        bpy.data.images['Viewer Node'].save_render("object_out\\Original.png")
 
         viewer_link = links.new(render_layers_node.outputs['Normal'], viewer_node.inputs[0])
         self.update_display(scene, viewer_node)
-        bpy.data.images['Viewer Node'].save_render("Normal.png")
+        bpy.data.images['Viewer Node'].save_render("object_out\\Normal.png")
 
         viewer_link = links.new(render_layers_node.outputs['UV'], viewer_node.inputs[0])
         self.update_display(scene, viewer_node)
-        bpy.data.images['Viewer Node'].save_render("UV.png")
+        bpy.data.images['Viewer Node'].save_render("object_out\\UV.png")
 
         viewer_link = links.new(render_layers_node.outputs['AO'], viewer_node.inputs[0])
         self.update_display(scene, viewer_node)
-        bpy.data.images['Viewer Node'].save_render("AO.png")
+        bpy.data.images['Viewer Node'].save_render("object_out\\AO.png")
 
         return {'FINISHED'}
 
