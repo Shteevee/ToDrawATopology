@@ -1,10 +1,11 @@
 import bpy
-import numpy as np
+from .DrawingAPI import *
+from skimage import filters, io
 
-class ExportComponentImagesOperator(bpy.types.Operator):
-    """"Export As PNG"""
-    bl_idname = "to_draw_a_topology.export_component"
-    bl_label = "Export component images"
+class ExportSvgSceneOperator(bpy.types.Operator):
+    """"Export an SVG drawing of the scene"""
+    bl_idname = "to_draw_a_topology.export_svg"
+    bl_label = "Export an SVG drawing of the scene"
     bl_options = {'REGISTER'}
 
     def execute(self, context):
@@ -23,7 +24,7 @@ class ExportComponentImagesOperator(bpy.types.Operator):
         scene.render.layers["RenderLayer"].use_pass_ambient_occlusion = True
 
         #set the background to be transparent
-        scene.render.image_settings.color_mode = 'RGBA' 
+        scene.render.image_settings.color_mode = 'RGBA'
         scene.render.alpha_mode = 'TRANSPARENT'
 
         #delete existing nodes
@@ -57,6 +58,16 @@ class ExportComponentImagesOperator(bpy.types.Operator):
         viewer_link = links.new(render_layers_node.outputs['AO'], viewer_node.inputs[0])
         self.update_display(scene, viewer_node)
         bpy.data.images['Viewer Node'].save_render("object_out\\AO.png")
+
+        original_scene = io.imread("object_out\\Original.png")
+        normal_scene = io.imread("object_out\\Normal.png")
+        uv_scene = io.imread("object_out\\UV.png")
+        ao_scene = io.imread("object_out\\AO.png")
+        edge_scene = filters.sobel(ao_scene[:,:,0] + normal_scene[:,:,0])
+
+        canvas = drawFeatures("object_out\\sketch.svg", edge_scene, ao_scene)
+        canvas = drawShadeDiagonal(canvas, original_scene, ao_scene, edge_scene, bands=4, interval=40)
+        canvas.save()
 
         return {'FINISHED'}
 
