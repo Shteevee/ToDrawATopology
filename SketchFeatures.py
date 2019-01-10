@@ -59,7 +59,7 @@ def walkNeighbourhood(image):
 
 #idea from https://www.geeksforgeeks.org/program-check-three-points-collinear/
 def checkColinear(p1, p2, p3):
-    return (p1[0] * (p2[1]-p3[1]) + p2[0] * (p1[1]-p3[1]) + p3[0] * (p1[1]-p2[1])) == 0
+    return (p1[1] * (p2[0]-p3[0]) + p2[1] * (p3[0]-p1[0]) + p3[1] * (p1[0]-p2[0])) == 0
 
 def getCentre(image):
     return np.mean(np.where(image==1), axis=1)

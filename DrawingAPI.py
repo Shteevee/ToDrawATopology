@@ -19,8 +19,8 @@ def drawShadeDiagonal(canvas, original_image, ao_image, edge_detected, bands=3, 
     for shade in getAllShadeBands(original_image, ao_image, edge_detected, bands, interval):
         shade = applyDiagonalEffect(shade, edge_detected, 2**current_band)
         current_band += 1
-        for feature in findShadeAnchors(walkNeighbourhood(np.flip(np.rot90(shade), axis=0))):
-            #needed to get rid of noise
+        for feature in walkNeighbourhood(np.flip(np.rot90(shade), axis=0)):
+            #needed to get rid of noise(?)
             if len(feature) > 2:
                 canvas = guided_sketch(canvas, np.array(feature), 0.5)
 

@@ -1,6 +1,9 @@
 import numpy as np
 from skimage import morphology
-from .SketchFeatures import findMajorAnchors
+try:
+    from .SketchFeatures import findMajorAnchors
+except:
+    from SketchFeatures import findMajorAnchors
 
 def getShadedArea(original_image, edge_detected, ao_im, threshold=24):
     original_shade = morphology.erosion(np.copy(original_image)[:,:,0] - edge_detected)

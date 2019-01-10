@@ -1,6 +1,6 @@
 import bpy
 from .DrawingAPI import *
-from skimage import filters, io
+from skimage import filters, io, exposure
 
 class ExportSvgSceneOperator(bpy.types.Operator):
     """"Export an SVG drawing of the scene"""
@@ -16,7 +16,7 @@ class ExportSvgSceneOperator(bpy.types.Operator):
 
         #set export files to PNG
         scene.render.image_settings.file_format='PNG'
-        scene.render.resolution_percentage = 100
+        scene.render.resolution_percentage = 50
 
         #set the views we need to be available
         scene.render.layers["RenderLayer"].use_pass_uv = True
@@ -46,23 +46,25 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         viewer_link = links.new(render_layers_node.outputs['Image'], viewer_node.inputs[0])
         self.update_display(scene, viewer_node)
         bpy.data.images['Viewer Node'].save_render("object_out\\Original.png")
+        # original_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
+        # original_scene = np.flip(np.reshape(original_scene, (int(scene.render.resolution_y*(scene.render.resolution_percentage/100)), int(scene.render.resolution_x*(scene.render.resolution_percentage/100)), 4)), axis=0)
 
         viewer_link = links.new(render_layers_node.outputs['Normal'], viewer_node.inputs[0])
         self.update_display(scene, viewer_node)
-        bpy.data.images['Viewer Node'].save_render("object_out\\Normal.png")
+        normal_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
+        normal_scene = np.flip(np.reshape(normal_scene, (int(scene.render.resolution_y*(scene.render.resolution_percentage/100)), int(scene.render.resolution_x*(scene.render.resolution_percentage/100)), 4)), axis=0)
 
         viewer_link = links.new(render_layers_node.outputs['UV'], viewer_node.inputs[0])
         self.update_display(scene, viewer_node)
-        bpy.data.images['Viewer Node'].save_render("object_out\\UV.png")
+        uv_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
+        uv_scene = np.flip(np.reshape(uv_scene, (int(scene.render.resolution_y*(scene.render.resolution_percentage/100)), int(scene.render.resolution_x*(scene.render.resolution_percentage/100)), 4)), axis=0)
 
         viewer_link = links.new(render_layers_node.outputs['AO'], viewer_node.inputs[0])
         self.update_display(scene, viewer_node)
-        bpy.data.images['Viewer Node'].save_render("object_out\\AO.png")
+        ao_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
+        ao_scene = np.flip(np.reshape(ao_scene, (int(scene.render.resolution_y*(scene.render.resolution_percentage/100)), int(scene.render.resolution_x*(scene.render.resolution_percentage/100)), 4)), axis=0)
 
         original_scene = io.imread("object_out\\Original.png")
-        normal_scene = io.imread("object_out\\Normal.png")
-        uv_scene = io.imread("object_out\\UV.png")
-        ao_scene = io.imread("object_out\\AO.png")
         edge_scene = filters.sobel(ao_scene[:,:,0] + normal_scene[:,:,0])
 
         canvas = drawFeatures("object_out\\sketch.svg", edge_scene, ao_scene)
