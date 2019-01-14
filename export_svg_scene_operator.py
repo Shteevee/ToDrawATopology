@@ -16,7 +16,7 @@ class ExportSvgSceneOperator(bpy.types.Operator):
 
         #set export files to PNG
         scene.render.image_settings.file_format='PNG'
-        scene.render.resolution_percentage = 50
+        reso_percentage = scene.render.resolution_percentage
 
         #set the views we need to be available
         scene.render.layers["RenderLayer"].use_pass_uv = True
@@ -62,7 +62,7 @@ class ExportSvgSceneOperator(bpy.types.Operator):
             normal_scene = io.imread("object_out\\Normal.png")
         else:
             normal_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
-            normal_scene = np.flip(np.reshape(normal_scene, (int(scene.render.resolution_y*(scene.render.resolution_percentage/100)), int(scene.render.resolution_x*(scene.render.resolution_percentage/100)), 4)), axis=0)
+            normal_scene = np.flip(np.reshape(normal_scene, (int(scene.render.resolution_y*(reso_percentage/100)), int(scene.render.resolution_x*(reso_percentage/100)), 4)), axis=0)
 
         viewer_link = links.new(render_layers_node.outputs['UV'], viewer_node.inputs[0])
         self.update_display(scene, viewer_node)
@@ -71,7 +71,7 @@ class ExportSvgSceneOperator(bpy.types.Operator):
             uv_scene = io.imread("object_out\\UV.png")
         else:
             uv_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
-            uv_scene = np.flip(np.reshape(uv_scene, (int(scene.render.resolution_y*(scene.render.resolution_percentage/100)), int(scene.render.resolution_x*(scene.render.resolution_percentage/100)), 4)), axis=0)
+            uv_scene = np.flip(np.reshape(uv_scene, (int(scene.render.resolution_y*(reso_percentage/100)), int(scene.render.resolution_x*(reso_percentage/100)), 4)), axis=0)
 
         viewer_link = links.new(render_layers_node.outputs['AO'], viewer_node.inputs[0])
         self.update_display(scene, viewer_node)
@@ -80,7 +80,7 @@ class ExportSvgSceneOperator(bpy.types.Operator):
             ao_scene = io.imread("object_out\\AO.png")
         else:
             ao_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
-            ao_scene = np.flip(np.reshape(ao_scene, (int(scene.render.resolution_y*(scene.render.resolution_percentage/100)), int(scene.render.resolution_x*(scene.render.resolution_percentage/100)), 4)), axis=0)
+            ao_scene = np.flip(np.reshape(ao_scene, (int(scene.render.resolution_y*(reso_percentage/100)), int(scene.render.resolution_x*(reso_percentage/100)), 4)), axis=0)
 
         original_scene = io.imread("object_out\\Original.png")
         edge_scene = filters.sobel(ao_scene[:,:,0] + normal_scene[:,:,0])
