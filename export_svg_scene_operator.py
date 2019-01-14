@@ -5,7 +5,7 @@ from skimage import filters, io, exposure
 class ExportSvgSceneOperator(bpy.types.Operator):
     """"Export an SVG drawing of the scene"""
     bl_idname = "to_draw_a_topology.export_svg"
-    bl_label = "Export an SVG drawing of the scene"
+    bl_label = "Export Drawing of the Scene"
     bl_options = {'REGISTER'}
 
     def execute(self, context):
@@ -22,6 +22,12 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         scene.render.layers["RenderLayer"].use_pass_uv = True
         scene.render.layers["RenderLayer"].use_pass_normal = True
         scene.render.layers["RenderLayer"].use_pass_ambient_occlusion = True
+
+        #get the attributes set in the panel
+        write_to_disk = scene.panel_features.memory_bool
+        no_shade_bands = scene.panel_features.bands_slider+1
+        width_of_bands = int(scene.panel_features.shade_dropdown)
+        shading_style = scene.panel_features.shading_type_dropdown
 
         #set the background to be transparent
         scene.render.image_settings.color_mode = 'RGBA'
@@ -51,24 +57,41 @@ class ExportSvgSceneOperator(bpy.types.Operator):
 
         viewer_link = links.new(render_layers_node.outputs['Normal'], viewer_node.inputs[0])
         self.update_display(scene, viewer_node)
-        normal_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
-        normal_scene = np.flip(np.reshape(normal_scene, (int(scene.render.resolution_y*(scene.render.resolution_percentage/100)), int(scene.render.resolution_x*(scene.render.resolution_percentage/100)), 4)), axis=0)
+        if write_to_disk:
+            bpy.data.images['Viewer Node'].save_render("object_out\\Normal.png")
+            normal_scene = io.imread("object_out\\Normal.png")
+        else:
+            normal_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
+            normal_scene = np.flip(np.reshape(normal_scene, (int(scene.render.resolution_y*(scene.render.resolution_percentage/100)), int(scene.render.resolution_x*(scene.render.resolution_percentage/100)), 4)), axis=0)
 
         viewer_link = links.new(render_layers_node.outputs['UV'], viewer_node.inputs[0])
         self.update_display(scene, viewer_node)
-        uv_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
-        uv_scene = np.flip(np.reshape(uv_scene, (int(scene.render.resolution_y*(scene.render.resolution_percentage/100)), int(scene.render.resolution_x*(scene.render.resolution_percentage/100)), 4)), axis=0)
+        if write_to_disk:
+            bpy.data.images['Viewer Node'].save_render("object_out\\UV.png")
+            uv_scene = io.imread("object_out\\UV.png")
+        else:
+            uv_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
+            uv_scene = np.flip(np.reshape(uv_scene, (int(scene.render.resolution_y*(scene.render.resolution_percentage/100)), int(scene.render.resolution_x*(scene.render.resolution_percentage/100)), 4)), axis=0)
 
         viewer_link = links.new(render_layers_node.outputs['AO'], viewer_node.inputs[0])
         self.update_display(scene, viewer_node)
-        ao_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
-        ao_scene = np.flip(np.reshape(ao_scene, (int(scene.render.resolution_y*(scene.render.resolution_percentage/100)), int(scene.render.resolution_x*(scene.render.resolution_percentage/100)), 4)), axis=0)
+        if write_to_disk:
+            bpy.data.images['Viewer Node'].save_render("object_out\\AO.png")
+            ao_scene = io.imread("object_out\\AO.png")
+        else:
+            ao_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
+            ao_scene = np.flip(np.reshape(ao_scene, (int(scene.render.resolution_y*(scene.render.resolution_percentage/100)), int(scene.render.resolution_x*(scene.render.resolution_percentage/100)), 4)), axis=0)
 
         original_scene = io.imread("object_out\\Original.png")
         edge_scene = filters.sobel(ao_scene[:,:,0] + normal_scene[:,:,0])
 
         canvas = drawFeatures("object_out\\sketch.svg", edge_scene, ao_scene)
-        canvas = drawShadeDiagonal(canvas, original_scene, ao_scene, edge_scene, bands=4, interval=40)
+        if shading_style == 'DIAG':
+            canvas = drawShadeDiagonal(canvas, original_scene, ao_scene, edge_scene, bands=no_shade_bands, interval=width_of_bands)
+        elif shading_style == 'HORIZ':
+            canvas = drawShadeHorizontal(canvas, original_scene, ao_scene, edge_scene, bands=no_shade_bands, interval=width_of_bands)
+        elif shading_style == 'VERT':
+            canvas = canvas = drawShadeVertical(canvas, original_scene, ao_scene, edge_scene, bands=no_shade_bands, interval=width_of_bands)
         canvas.save()
 
         return {'FINISHED'}

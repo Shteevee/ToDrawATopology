@@ -30,6 +30,13 @@ def applyHorizontalEffect(shaded_area, edge_detected, k=2):
     shaded_area = np.where(shaded_area > 0, 256, 0)
     return shaded_area
 
+def applyVerticalEffect(shaded_area, edge_detected, k=2):
+    mask = np.zeros_like(edge_detected)
+    mask[:,::k] = 256
+    shaded_area = shaded_area+mask-256
+    shaded_area = np.where(shaded_area > 0, 256, 0)
+    return shaded_area
+
 def applyDiagonalEffect(shaded_area, edge_detected, k=2):
     mask = np.zeros_like(edge_detected)
     changed_row = mask[0]
@@ -42,10 +49,10 @@ def applyDiagonalEffect(shaded_area, edge_detected, k=2):
     return shaded_area
 
 def findShadeAnchors(pointsList):
-    newPointsList = findMajorAnchors(pointsList[:])
+    newPointsList = []
     for feature in pointsList:
-        newPointsList.append([np.max(feature, axis=0), np.min(feature, axis=0)])
-
+        newPointsList.append([feature[0], feature[-1]])
+        newPointsList.append([feature[-1], feature[0]])
     return newPointsList
 
 def drawShadeGreyBackground(canvas, original_monkey, ao_monkey, edge_monkey, bands=3, interval=30):

@@ -14,6 +14,16 @@ def drawShadeHorizontal(canvas, original_image, ao_image, edge_detected, bands=3
 
     return canvas
 
+def drawShadeVertical(canvas, original_image, ao_image, edge_detected, bands=3, interval=30):
+    current_band = 1
+    for shade in getAllShadeBands(original_image, ao_image, edge_detected, bands, interval):
+        shade = applyVerticalEffect(shade, edge_detected, 2**current_band)
+        current_band += 1
+        for feature in walkNeighbourhood(np.flip(np.rot90(shade), axis=0)):
+            canvas = guided_sketch(canvas, np.array(feature), 0.5)
+
+    return canvas
+
 def drawShadeDiagonal(canvas, original_image, ao_image, edge_detected, bands=3, interval=30):
     current_band = 2
     for shade in getAllShadeBands(original_image, ao_image, edge_detected, bands, interval):
