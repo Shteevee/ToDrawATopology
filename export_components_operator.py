@@ -3,7 +3,7 @@ import numpy as np
 
 class ExportComponentImagesOperator(bpy.types.Operator):
     """"Export As PNG"""
-    bl_idname = "export_scene.export_component"
+    bl_idname = "to_draw_a_topology.export_component"
     bl_label = "Export component images"
     bl_options = {'REGISTER'}
 
@@ -15,7 +15,16 @@ class ExportComponentImagesOperator(bpy.types.Operator):
 
         #set export files to PNG
         scene.render.image_settings.file_format='PNG'
-        #scene.render.resolution_percentage = 100
+        scene.render.resolution_percentage = 100
+
+        #set the views we need to be available
+        scene.render.layers["RenderLayer"].use_pass_uv = True
+        scene.render.layers["RenderLayer"].use_pass_normal = True
+        scene.render.layers["RenderLayer"].use_pass_ambient_occlusion = True
+
+        #set the background to be transparent
+        scene.render.image_settings.color_mode = 'RGBA' 
+        scene.render.alpha_mode = 'TRANSPARENT'
 
         #delete existing nodes
         for node in tree.nodes:
