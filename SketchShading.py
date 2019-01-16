@@ -1,5 +1,5 @@
 import numpy as np
-from skimage import morphology
+from skimage import morphology, util
 try:
     from .SketchFeatures import findMajorAnchors
 except:
@@ -44,6 +44,14 @@ def applyDiagonalEffect(shaded_area, edge_detected, k=2):
     for i in range(0, len(mask)):
         mask[i] = changed_row
         changed_row = np.roll(changed_row, -1)
+    shaded_area = shaded_area+mask-256
+    shaded_area = np.where(shaded_area > 0, 256, 0)
+    return shaded_area
+
+def applyDottedEffect(shaded_area, edge_detected, k=0):
+    mask = np.zeros_like(edge_detected)
+    mask = util.random_noise(mask, mode='gaussian', mean=0.01)
+    mask = np.where(mask > 0.05*k, 256, 0)
     shaded_area = shaded_area+mask-256
     shaded_area = np.where(shaded_area > 0, 256, 0)
     return shaded_area
