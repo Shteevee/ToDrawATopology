@@ -37,7 +37,11 @@ def walkNeighbourhood(image):
     thinned_image = np.where(thinned_image<0.1, 0, 1)
     centre = getCentre(thinned_image)
 
-    totalPixels = exposure.histogram(thinned_image, nbins=2)[0][1]
+    try:
+        totalPixels = exposure.histogram(thinned_image, nbins=2)[0][1]
+    except IndexError:
+        return []
+        
     currentPixel = np.array([-1, -1])
     walkingOrder = []
     index=-1
