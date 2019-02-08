@@ -42,6 +42,7 @@ class PanelFeatures(bpy.types.PropertyGroup):
                  ('HORIZ', "Horizontal", ""),
                  ('VERT', "Vertical", ""),
                  ('DOT', "Dotted", ""),
+#                 ('CONT', "Contoured", ""),
                  ('NONE', "None", "")]
         )
 

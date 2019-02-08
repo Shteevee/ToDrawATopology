@@ -94,6 +94,9 @@ class ExportSvgSceneOperator(bpy.types.Operator):
             canvas = drawShadeVertical(canvas, original_scene, ao_scene, edge_scene, bands=no_shade_bands, interval=width_of_bands)
         elif shading_style == 'DOT':
             canvas = drawShadeDotted(canvas, original_scene, ao_scene, edge_scene, bands=no_shade_bands, interval=width_of_bands)
+        # elif shading_style == 'CONT':
+        #     canvas = drawShadeStream(canvas, original_scene, ao_scene, uv_scene[:,:,0], edge_scene, bands=no_shade_bands, interval=width_of_bands)
+        #     canvas = drawShadeStream(canvas, original_scene, ao_scene, uv_scene[:,:,1], edge_scene, bands=no_shade_bands, interval=width_of_bands)
         canvas.save()
 
         return {'FINISHED'}

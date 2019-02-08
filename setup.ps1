@@ -4,5 +4,6 @@ Invoke-Expression "& `"..\..\..\python\bin\python`" .\get-pip.py"
 Invoke-Expression "& `"..\..\..\python\Scripts\pip`" install numpy"
 Invoke-Expression "& `"..\..\..\python\Scripts\pip`" install scikit-image"
 Invoke-Expression "& `"..\..\..\python\Scripts\pip`" install svgwrite"
+Invoke-Expression "& `"..\..\..\python\Scripts\pip`" install matplotlib"
 Remove-Item -path get-pip.py
 pause
