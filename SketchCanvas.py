@@ -25,6 +25,12 @@ def guided_sketch(dwg, points, thickness=1):
 
     return dwg
 
+def dotted_shade_sketch(dwg, points, radius=0.5):
+    for point in points:
+        dwg.add(dwg.circle(center=(float(point[0])+np.random.uniform(-0.5,0.5),float(point[1])+np.random.uniform(-0.5,0.5)), r=radius))
+
+    return dwg
+
 def lessThan(startPos, currentPos, endPos):
     return np.linalg.norm(currentPos-startPos) < np.linalg.norm(endPos-startPos)
 
