@@ -36,6 +36,16 @@ def drawShadeDiagonal(canvas, original_image, ao_image, edge_detected, bands=3, 
 
     return canvas
 
+def drawShadeDotted(canvas, original_image, ao_image, edge_detected, bands=3, interval=30):
+    current_band = 1
+    for shade in getAllShadeBands(original_image, ao_image, edge_detected, bands, interval):
+        shade = applyDottedEffect(shade, edge_detected, current_band-1)
+        current_band += 1
+        for feature in walkNeighbourhood(np.flip(np.rot90(shade), axis=0)):
+            canvas = dotted_shade_sketch(canvas, np.array(feature), 0.35)
+
+    return canvas
+
 def drawFeatures(name, edge_detected, ao_image):
     pointToDraw = walkNeighbourhood(np.flip(np.rot90(edge_detected), axis=0))
     canvas = initCanvas(name)

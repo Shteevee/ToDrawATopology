@@ -41,6 +41,7 @@ class PanelFeatures(bpy.types.PropertyGroup):
         items = [('DIAG', "Diagonal", ""),
                  ('HORIZ', "Horizontal", ""),
                  ('VERT', "Vertical", ""),
+                 ('DOT', "Dotted", ""),
                  ('NONE', "None", "")]
         )
 
