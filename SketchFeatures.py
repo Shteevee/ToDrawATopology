@@ -41,19 +41,17 @@ def walkNeighbourhood(image):
         totalPixels = exposure.histogram(thinned_image, nbins=2)[0][1]
     except IndexError:
         return []
-        
+
     currentPixel = np.array([-1, -1])
     walkingOrder = []
     index=-1
     while totalPixels > 0:
 
         if np.array_equal(currentPixel, np.array([-1, -1])):
-            #print(len(getUnwalkedCoords(thinned_image)))
             currentPixel = getUnwalkedCoords(thinned_image)[0]
             walkingOrder.append([])
             index += 1
         else:
-            #print(currentPixel, totalPixels)
             thinned_image[currentPixel[0], currentPixel[1]] = 0
             walkingOrder[index].append(currentPixel)
             currentPixel = nextNeighbour(currentPixel, thinned_image, centre)
@@ -69,8 +67,8 @@ def getCentre(image):
     return np.mean(np.where(image==1), axis=1)
 
 #Checking colinearity should probably be used here (maybe a recursive solution??)
-def findMajorAnchors(pointsList):
-    for feature in pointsList:
+def findMajorAnchors(points_list):
+    for feature in points_list:
         changed = True
         #if the point set wasn't reduced then go to the next point set
         while changed:
@@ -90,4 +88,4 @@ def findMajorAnchors(pointsList):
                     changed = True
 
                 i += 1
-    return pointsList
+    return points_list

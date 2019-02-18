@@ -51,31 +51,28 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         comp_link = links.new(render_layers_node.outputs[0], comp_node.inputs[0])
 
         #get the views from the nodes
-        viewer_link = links.new(render_layers_node.outputs['Image'], viewer_node.inputs[0])
-        self.update_display(scene, viewer_node)
-        bpy.data.images['Viewer Node'].save_render("object_out\\Original.png")
-        original_scene = io.imread("object_out\\Original.png")
+        views = dict()
+        views['original'] = self.getView('Original', viewer_node, render_layers_node, scene, reso_percentage, True)
+        views['normal'] = self.getView('Normal', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
+        views['uv'] = self.getView('UV', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
+        views['ao'] = self.getView('AO', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
+        views['edge'] = filters.sobel(views['ao'][:,:,0]) + filters.sobel(views['normal'][:,:,0])
 
-        normal_scene = self.getView('Normal', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
-
-        uv_scene = self.getView('UV', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
-
-        ao_scene = self.getView('AO', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
-
-        edge_scene = filters.sobel(ao_scene[:,:,0]) + filters.sobel(normal_scene[:,:,0])
-
-        canvas = drawFeatures("object_out\\sketch.svg", edge_scene, ao_scene)
+        #start drawing
+        canvas = drawFeatures("object_out\\sketch.svg", views)
+        #draw the shading style chosen
         if shading_style == 'DIAG':
-            canvas = drawShadeDiagonal(canvas, original_scene, ao_scene, edge_scene, bands=no_shade_bands, interval=width_of_bands)
+            canvas = drawShadeDiagonal(canvas, views, bands=no_shade_bands, interval=width_of_bands)
         elif shading_style == 'HORIZ':
-            canvas = drawShadeHorizontal(canvas, original_scene, ao_scene, edge_scene, bands=no_shade_bands, interval=width_of_bands)
+            canvas = drawShadeHorizontal(canvas, views, bands=no_shade_bands, interval=width_of_bands)
         elif shading_style == 'VERT':
-            canvas = drawShadeVertical(canvas, original_scene, ao_scene, edge_scene, bands=no_shade_bands, interval=width_of_bands)
+            canvas = drawShadeVertical(canvas, views, bands=no_shade_bands, interval=width_of_bands)
         elif shading_style == 'DOT':
-            canvas = drawShadeDotted(canvas, original_scene, ao_scene, edge_scene, bands=no_shade_bands, interval=width_of_bands)
+            canvas = drawShadeDotted(canvas, views, bands=no_shade_bands, interval=width_of_bands)
         elif shading_style == 'CONT':
-            canvas = drawShadeStream(canvas, original_scene, ao_scene, uv_scene[:,:,0], edge_scene, bands=no_shade_bands, interval=width_of_bands)
-            canvas = drawShadeStream(canvas, original_scene, ao_scene, uv_scene[:,:,1], edge_scene, bands=no_shade_bands, interval=width_of_bands)
+            canvas = drawShadeStream(canvas, views, views['uv'][:,:,0], bands=no_shade_bands, interval=width_of_bands)
+            canvas = drawShadeStream(canvas, views, views['uv'][:,:,1], bands=no_shade_bands, interval=width_of_bands)
+
         canvas.save()
 
         return {'FINISHED'}
