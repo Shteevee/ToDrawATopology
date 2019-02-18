@@ -57,3 +57,20 @@ def drawFeatures(name, edge_detected, ao_image):
     canvas = guided_sketch(canvas, np.array(outline[0]), 1.5)
 
     return canvas
+
+def drawShadeStream(canvas, original_image, ao_image, uv_component, edge_detected, bands=3, interval=30):
+    current_band = 1
+    shades = getAllShadeBands(original_image, ao_image, edge_detected, bands, interval)
+    contours = applyStreamEffect(uv_component, 1)
+    contours = list(map(lambda x: x.tolist()[::3], contours))
+    contours = findMajorAnchors(contours)
+
+    for shade in shades:
+        segmented_contours = shadeSegmentedContours(shade, contours)[::current_band]
+        for feature in segmented_contours:
+            feature = np.array(feature)
+            if np.linalg.norm(feature[0]-feature[-1]) > 3:
+                guided_sketch(canvas, np.array(feature), 0.3)
+        current_band += 1
+
+    return canvas

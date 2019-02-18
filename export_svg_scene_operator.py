@@ -83,7 +83,7 @@ class ExportSvgSceneOperator(bpy.types.Operator):
             ao_scene = np.flip(np.reshape(ao_scene, (int(scene.render.resolution_y*(reso_percentage/100)), int(scene.render.resolution_x*(reso_percentage/100)), 4)), axis=0)
 
         original_scene = io.imread("object_out\\Original.png")
-        edge_scene = filters.sobel(ao_scene[:,:,0] + normal_scene[:,:,0])
+        edge_scene = filters.sobel(ao_scene[:,:,0]) + filters.sobel(normal_scene[:,:,0])
 
         canvas = drawFeatures("object_out\\sketch.svg", edge_scene, ao_scene)
         if shading_style == 'DIAG':
@@ -94,9 +94,9 @@ class ExportSvgSceneOperator(bpy.types.Operator):
             canvas = drawShadeVertical(canvas, original_scene, ao_scene, edge_scene, bands=no_shade_bands, interval=width_of_bands)
         elif shading_style == 'DOT':
             canvas = drawShadeDotted(canvas, original_scene, ao_scene, edge_scene, bands=no_shade_bands, interval=width_of_bands)
-        # elif shading_style == 'CONT':
-        #     canvas = drawShadeStream(canvas, original_scene, ao_scene, uv_scene[:,:,0], edge_scene, bands=no_shade_bands, interval=width_of_bands)
-        #     canvas = drawShadeStream(canvas, original_scene, ao_scene, uv_scene[:,:,1], edge_scene, bands=no_shade_bands, interval=width_of_bands)
+        elif shading_style == 'CONT':
+            canvas = drawShadeStream(canvas, original_scene, ao_scene, uv_scene[:,:,0], edge_scene, bands=no_shade_bands, interval=width_of_bands)
+            canvas = drawShadeStream(canvas, original_scene, ao_scene, uv_scene[:,:,1], edge_scene, bands=no_shade_bands, interval=width_of_bands)
         canvas.save()
 
         return {'FINISHED'}
