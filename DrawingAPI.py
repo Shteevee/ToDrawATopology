@@ -59,11 +59,12 @@ def drawFeatures(name, edge_detected, ao_image):
     return canvas
 
 def drawShadeStream(canvas, original_image, ao_image, uv_component, edge_detected, bands=3, interval=30):
+    if np.all(uv_component==0):
+        return canvas
+
     current_band = 1
     shades = getAllShadeBands(original_image, ao_image, edge_detected, bands, interval)
-    contours = applyStreamEffect(uv_component, 1)
-    contours = list(map(lambda x: x.tolist()[::3], contours))
-    contours = findMajorAnchors(contours)
+    contours = findMajorAnchors(applySmoothing(applyStreamEffect(uv_component, 1)))
 
     for shade in shades:
         segmented_contours = shadeSegmentedContours(shade, contours)[::current_band]

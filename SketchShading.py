@@ -137,3 +137,6 @@ def shadeSegmentedContours(shade, contours):
             prev_in_shade = False
 
     return new_contours
+
+def applySmoothing(lines):
+    return list(map(lambda x: x.tolist()[::3], lines))

@@ -37,6 +37,7 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         for node in tree.nodes:
             tree.nodes.remove(node)
 
+        #setup nodes for necessary views
         render_layers_node = tree.nodes.new('CompositorNodeRLayers')
         render_layers_node.location = 0,0
 
@@ -49,40 +50,18 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         links = tree.links
         comp_link = links.new(render_layers_node.outputs[0], comp_node.inputs[0])
 
+        #get the views from the nodes
         viewer_link = links.new(render_layers_node.outputs['Image'], viewer_node.inputs[0])
         self.update_display(scene, viewer_node)
         bpy.data.images['Viewer Node'].save_render("object_out\\Original.png")
-        # original_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
-        # original_scene = np.flip(np.reshape(original_scene, (int(scene.render.resolution_y*(scene.render.resolution_percentage/100)), int(scene.render.resolution_x*(scene.render.resolution_percentage/100)), 4)), axis=0)
-
-        viewer_link = links.new(render_layers_node.outputs['Normal'], viewer_node.inputs[0])
-        self.update_display(scene, viewer_node)
-        if write_to_disk:
-            bpy.data.images['Viewer Node'].save_render("object_out\\Normal.png")
-            normal_scene = io.imread("object_out\\Normal.png")
-        else:
-            normal_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
-            normal_scene = np.flip(np.reshape(normal_scene, (int(scene.render.resolution_y*(reso_percentage/100)), int(scene.render.resolution_x*(reso_percentage/100)), 4)), axis=0)
-
-        viewer_link = links.new(render_layers_node.outputs['UV'], viewer_node.inputs[0])
-        self.update_display(scene, viewer_node)
-        if write_to_disk:
-            bpy.data.images['Viewer Node'].save_render("object_out\\UV.png")
-            uv_scene = io.imread("object_out\\UV.png")
-        else:
-            uv_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
-            uv_scene = np.flip(np.reshape(uv_scene, (int(scene.render.resolution_y*(reso_percentage/100)), int(scene.render.resolution_x*(reso_percentage/100)), 4)), axis=0)
-
-        viewer_link = links.new(render_layers_node.outputs['AO'], viewer_node.inputs[0])
-        self.update_display(scene, viewer_node)
-        if write_to_disk:
-            bpy.data.images['Viewer Node'].save_render("object_out\\AO.png")
-            ao_scene = io.imread("object_out\\AO.png")
-        else:
-            ao_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
-            ao_scene = np.flip(np.reshape(ao_scene, (int(scene.render.resolution_y*(reso_percentage/100)), int(scene.render.resolution_x*(reso_percentage/100)), 4)), axis=0)
-
         original_scene = io.imread("object_out\\Original.png")
+
+        normal_scene = self.getView('Normal', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
+
+        uv_scene = self.getView('UV', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
+
+        ao_scene = self.getView('AO', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
+
         edge_scene = filters.sobel(ao_scene[:,:,0]) + filters.sobel(normal_scene[:,:,0])
 
         canvas = drawFeatures("object_out\\sketch.svg", edge_scene, ao_scene)
@@ -106,3 +85,14 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         scene.node_tree.update_tag()
         scene.update()
         bpy.ops.render.render()
+
+    def getView(self, view_name, viewer_node, render_layers_node, scene, reso_percentage, write_to_disk):
+        links = scene.node_tree.links
+        viewer_link = links.new(render_layers_node.outputs[view_name], viewer_node.inputs[0])
+        self.update_display(scene, viewer_node)
+        if write_to_disk:
+            bpy.data.images['Viewer Node'].save_render("object_out\\" + view_name +".png")
+            return io.imread("object_out\\" + view_name +".png")
+        else:
+            view_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
+            return np.flip(np.reshape(view_scene, (int(scene.render.resolution_y*(reso_percentage/100)), int(scene.render.resolution_x*(reso_percentage/100)), 4)), axis=0)
