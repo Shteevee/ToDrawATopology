@@ -25,6 +25,10 @@ def nextNeighbour(currentPixel, thinned_image, centrePoint):
     neighbours = getNeighbours(currentPixel, centrePoint)
     for n in neighbours:
         n = np.array(n).astype(int)
+        
+        if n[0] < 0 or n[1] < 0:
+            return np.array([-1,-1])
+
         try:
             if thinned_image[n[0], n[1]] == 1:
                 return n
