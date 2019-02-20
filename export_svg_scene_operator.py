@@ -51,8 +51,9 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         comp_link = links.new(render_layers_node.outputs[0], comp_node.inputs[0])
 
         #get the views from the nodes
+
         views = dict()
-        views['original'] = self.getView('Original', viewer_node, render_layers_node, scene, reso_percentage, True)
+        views['original'] = self.getView('Image', viewer_node, render_layers_node, scene, reso_percentage, True)
         views['normal'] = self.getView('Normal', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
         views['uv'] = self.getView('UV', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
         views['ao'] = self.getView('AO', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
