@@ -8,7 +8,7 @@ class findMajorAnchorsTest(unittest.TestCase):
     def test_findMajorAnchors_tooFewPointsReturnsUnchanged(self):
         points = [[[1,1],
                    [1,1]]]
-        points = findMajorAnchors(points)
+        points = find_major_anchors(points)
         self.assertEqual(points, [[[1,1],
                                   [1,1]]])
 
@@ -18,7 +18,7 @@ class findMajorAnchorsTest(unittest.TestCase):
                    [15,15],
                    [20,20],
                    [25,25]]]
-        points = findMajorAnchors(points)
+        points = find_major_anchors(points)
         self.assertEqual(points, [[[5,5],
                                    [25,25]]])
 
@@ -28,7 +28,7 @@ class findMajorAnchorsTest(unittest.TestCase):
                    [1,15],
                    [1,20],
                    [1,25]]]
-        points = findMajorAnchors(points)
+        points = find_major_anchors(points)
         self.assertEqual(points, [[[1,5],
                                    [1,25]]])
 
@@ -38,13 +38,13 @@ class findMajorAnchorsTest(unittest.TestCase):
                    [15,1],
                    [20,1],
                    [25,1]]]
-        points = findMajorAnchors(points)
+        points = find_major_anchors(points)
         self.assertEqual(points, [[[5,1],
                                    [25,1]]])
 
     def test_findMajorAnchors_NoPointsReturnsUnchanged(self):
         points = [[]]
-        points = findMajorAnchors(points)
+        points = find_major_anchors(points)
         self.assertEqual(points, [[]])
 
 class getNeighboursTest(unittest.TestCase):
@@ -53,7 +53,7 @@ class getNeighboursTest(unittest.TestCase):
         current_pixel = [13,7]
         centre_point = [20,20]
 
-        neighbours = getNeighbours(current_pixel, centre_point)
+        neighbours = get_neighbours(current_pixel, centre_point)
 
         self.assertEqual(len(neighbours), 8)
 
@@ -61,7 +61,7 @@ class getNeighboursTest(unittest.TestCase):
         current_pixel = [1,1]
         centre_point = [3,3]
 
-        neighbours = getNeighbours(current_pixel, centre_point)
+        neighbours = get_neighbours(current_pixel, centre_point)
 
         target = np.array([[2,2],
                            [2,1],
@@ -78,7 +78,7 @@ class getUnwalkedCoordsTest(unittest.TestCase):
     def test_getUnwalkedCoords_NoValuesReturned(self):
         image = np.zeros((3,3))
 
-        coords = getUnwalkedCoords(image)
+        coords = get_unwalked_coords(image)
 
         target = np.empty((0,2))
         self.assertTrue(np.array_equal(coords, target))
@@ -87,7 +87,7 @@ class getUnwalkedCoordsTest(unittest.TestCase):
         image = np.zeros((3,3))
         image[[0,1],[1,1]] = 1
 
-        coords = getUnwalkedCoords(image)
+        coords = get_unwalked_coords(image)
 
         target = np.array([[0,1],
                            [1,1]])
@@ -96,12 +96,12 @@ class getUnwalkedCoordsTest(unittest.TestCase):
 class checkColinearTest(unittest.TestCase):
 
     def test_checkColinear_ReturnsZeroForColinear(self):
-        result = checkColinear([1,1], [2,2], [3,3])
+        result = check_colinear([1,1], [2,2], [3,3])
 
         self.assertTrue(result)
 
     def test_checkColinear_ReturnsNonZeroForNotColinear(self):
-        result = checkColinear([1,2], [2,2], [3,3])
+        result = check_colinear([1,2], [2,2], [3,3])
 
         self.assertFalse(result)
 
@@ -112,7 +112,7 @@ class nextNeighbourTest(unittest.TestCase):
         thinned_image = np.zeros((3,3))
         centre_point = [2,2]
 
-        coord = nextNeighbour(current_pixel, thinned_image, centre_point)
+        coord = next_neighbour(current_pixel, thinned_image, centre_point)
 
         target = np.array([-1,-1])
         self.assertTrue(np.array_equal(coord, target))
@@ -123,7 +123,7 @@ class nextNeighbourTest(unittest.TestCase):
         thinned_image[[2,2]] = 1
         centre_point = [2,2]
 
-        coord = nextNeighbour(current_pixel, thinned_image, centre_point)
+        coord = next_neighbour(current_pixel, thinned_image, centre_point)
 
         target = np.array([-1,-1])
         self.assertTrue(np.array_equal(coord, target))
@@ -134,7 +134,7 @@ class nextNeighbourTest(unittest.TestCase):
         thinned_image[[2,2]] = 1
         centre_point = [2,2]
 
-        coord = nextNeighbour(current_pixel, thinned_image, centre_point)
+        coord = next_neighbour(current_pixel, thinned_image, centre_point)
 
         target = np.array([2,2])
         self.assertTrue(np.array_equal(coord, target))
@@ -146,7 +146,7 @@ class nextNeighbourTest(unittest.TestCase):
         thinned_image[2,2] = 1
         centre_point = [1,1]
 
-        coord = nextNeighbour(current_pixel, thinned_image, centre_point)
+        coord = next_neighbour(current_pixel, thinned_image, centre_point)
 
         target = np.array([1,1])
         self.assertTrue(np.array_equal(coord, target))
@@ -156,7 +156,7 @@ class walkNeighbourhoodTest(unittest.TestCase):
     def test_walkNeighbourhood_ReturnsNothingForEmptyImage(self):
         image = np.zeros((3,3))
 
-        coords = walkNeighbourhood(image)
+        coords = walk_neighbourhood(image)
 
         target = []
         self.assertEqual(coords, target)
@@ -165,7 +165,7 @@ class walkNeighbourhoodTest(unittest.TestCase):
         image = np.zeros((5,5))
         image[1,1] = 255
 
-        coords = walkNeighbourhood(image)
+        coords = walk_neighbourhood(image)
 
         target = [[np.array([1,1])]]
         results = list(map(lambda x, y: np.array_equal(x,y), coords[0], target[0]))
@@ -182,7 +182,7 @@ class walkNeighbourhoodTest(unittest.TestCase):
         image[3,2] = 255
         image[3,3] = 255
 
-        coords = walkNeighbourhood(image)
+        coords = walk_neighbourhood(image)
 
         target = [[np.array([1,2]),
                   np.array([2,3]),

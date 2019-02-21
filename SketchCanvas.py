@@ -16,7 +16,7 @@ def guided_sketch(dwg, points, thickness=1):
         else:
             next_difference_vector = difference_vector
 
-        angle = dotProductAngle(difference_vector, next_difference_vector)
+        angle = dot_product_angle(difference_vector, next_difference_vector)
         for j in range(1, turn_rate):
             nextPos = [(currentPos[0] + (difference_vector[0]*(j/turn_rate)) * np.cos(angle)), currentPos[1] + (difference_vector[1]*(j/turn_rate) * np.sin(angle))]
             path.push(('L', nextPos[0], nextPos[1]))
@@ -31,10 +31,10 @@ def dotted_shade_sketch(dwg, points, radius=0.5):
 
     return dwg
 
-def lessThan(startPos, currentPos, endPos):
+def less_than(startPos, currentPos, endPos):
     return np.linalg.norm(currentPos-startPos) < np.linalg.norm(endPos-startPos)
 
-def dotProductAngle(v1, v2):
+def dot_product_angle(v1, v2):
     #re-arranged dot product for theta
     theta = np.arccos( np.dot(v1,v2) / (np.linalg.norm(v1) * np.linalg.norm(v2)) )
     if np.isnan(theta):
@@ -42,11 +42,11 @@ def dotProductAngle(v1, v2):
     else:
         return np.arccos( np.dot(v1,v2) / (np.linalg.norm(v1) * np.linalg.norm(v2)) )
 
-def rotMatrix(theta):
+def rot_matrix(theta):
     return [[np.cos(theta), -np.sin(theta)],
             [np.sin(theta), np.cos(theta)]]
 
-def initCanvas(name):
+def init_canvas(name):
     dwg = svgwrite.Drawing(name)
 
     dwg.add(dwg.rect(insert=(0, 0), size=('100%', '100%'), rx=None, ry=None, fill='white'))

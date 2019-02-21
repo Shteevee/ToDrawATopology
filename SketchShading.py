@@ -4,11 +4,11 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 try:
-    from .SketchFeatures import findMajorAnchors
+    from .SketchFeatures import find_major_anchors
 except:
-    from SketchFeatures import findMajorAnchors
+    from SketchFeatures import find_major_anchors
 
-def getShadedArea(views, threshold=24):
+def get_shaded_area(views, threshold=24):
     original_shade = morphology.erosion(np.copy(views['original'])[:,:,0] - views['edge'])
     shade = np.where(original_shade < threshold, 0, 256)
     ao_image = np.where(views['ao'][:,:,0]>0)
@@ -16,31 +16,31 @@ def getShadedArea(views, threshold=24):
     shaded_area = np.where(shaded_area > 0, 256, 0)
     return shaded_area
 
-def getAllShadeBands(views, bands=3, interval=30):
+def get_all_shade_bands(views, bands=3, interval=30):
     previous_shade = np.zeros_like(views['edge'])
     shade_bands = []
     for band in range(1, bands+1):
-        shade = getShadedArea(views, band*interval) - previous_shade
+        shade = get_shaded_area(views, band*interval) - previous_shade
         shade_bands.append(shade)
         previous_shade = previous_shade + shade
 
     return shade_bands
 
-def applyHorizontalEffect(shaded_area, edge_detected, k=2):
+def apply_horizontal_effect(shaded_area, edge_detected, k=2):
     mask = np.zeros_like(edge_detected)
     mask[::k] = 256
     shaded_area = shaded_area+mask-256
     shaded_area = np.where(shaded_area > 0, 256, 0)
     return shaded_area
 
-def applyVerticalEffect(shaded_area, edge_detected, k=2):
+def apply_vertical_effect(shaded_area, edge_detected, k=2):
     mask = np.zeros_like(edge_detected)
     mask[:,::k] = 256
     shaded_area = shaded_area+mask-256
     shaded_area = np.where(shaded_area > 0, 256, 0)
     return shaded_area
 
-def applyDiagonalEffect(shaded_area, edge_detected, k=2):
+def apply_diagonal_effect(shaded_area, edge_detected, k=2):
     mask = np.zeros_like(edge_detected)
     changed_row = mask[0]
     changed_row[::k] = 256
@@ -51,7 +51,7 @@ def applyDiagonalEffect(shaded_area, edge_detected, k=2):
     shaded_area = np.where(shaded_area > 0, 256, 0)
     return shaded_area
 
-def applyDottedEffect(shaded_area, edge_detected, k=0):
+def apply_dotted_effect(shaded_area, edge_detected, k=0):
     mask = np.zeros_like(edge_detected)
     mask = util.random_noise(mask, mode='gaussian', mean=0.01)
     mask = np.where(mask > 0.07*k, 256, 0)
@@ -59,9 +59,9 @@ def applyDottedEffect(shaded_area, edge_detected, k=0):
     shaded_area = np.where(shaded_area > 0, 256, 0)
     return shaded_area
 
-def applyStreamEffect(component, k=2):
+def apply_stream_effect(component, k=2):
     filtered_uv = np.copy(component.astype(np.float64))
-    component_grad_X, component_grad_Y = np.gradient(makeContinuous(filtered_uv))
+    component_grad_X, component_grad_Y = np.gradient(make_continuous(filtered_uv))
 
     w, h = component_grad_X.shape
     y, x = np.mgrid[0:w, 0:h]
@@ -73,7 +73,7 @@ def applyStreamEffect(component, k=2):
 
     return lines
 
-def makeContinuous(component):
+def make_continuous(component):
     component = component/np.max(component)
     component = np.sin(component*2*np.pi)
 
@@ -102,7 +102,7 @@ def stitch_paths(paths):
 
     return stitched_paths
 
-def shadeSegmentedContours(shade, contours):
+def shade_segmented_contours(shade, contours):
     new_contours = list()
     prev_in_shade = False
     in_shade = False
@@ -131,5 +131,5 @@ def shadeSegmentedContours(shade, contours):
 
     return new_contours
 
-def applySmoothing(lines):
+def apply_smoothing(lines):
     return list(map(lambda x: x.tolist()[::3], lines))
