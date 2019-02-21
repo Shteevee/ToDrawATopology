@@ -37,6 +37,7 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         for node in tree.nodes:
             tree.nodes.remove(node)
 
+        #setup nodes for necessary views
         render_layers_node = tree.nodes.new('CompositorNodeRLayers')
         render_layers_node.location = 0,0
 
@@ -49,51 +50,30 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         links = tree.links
         comp_link = links.new(render_layers_node.outputs[0], comp_node.inputs[0])
 
-        viewer_link = links.new(render_layers_node.outputs['Image'], viewer_node.inputs[0])
-        self.update_display(scene, viewer_node)
-        bpy.data.images['Viewer Node'].save_render("object_out\\Original.png")
-        # original_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
-        # original_scene = np.flip(np.reshape(original_scene, (int(scene.render.resolution_y*(scene.render.resolution_percentage/100)), int(scene.render.resolution_x*(scene.render.resolution_percentage/100)), 4)), axis=0)
+        #get the views from the nodes
 
-        viewer_link = links.new(render_layers_node.outputs['Normal'], viewer_node.inputs[0])
-        self.update_display(scene, viewer_node)
-        if write_to_disk:
-            bpy.data.images['Viewer Node'].save_render("object_out\\Normal.png")
-            normal_scene = io.imread("object_out\\Normal.png")
-        else:
-            normal_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
-            normal_scene = np.flip(np.reshape(normal_scene, (int(scene.render.resolution_y*(reso_percentage/100)), int(scene.render.resolution_x*(reso_percentage/100)), 4)), axis=0)
+        views = dict()
+        views['original'] = self.get_view('Image', viewer_node, render_layers_node, scene, reso_percentage, True)
+        views['normal'] = self.get_view('Normal', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
+        views['uv'] = self.get_view('UV', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
+        views['ao'] = self.get_view('AO', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
+        views['edge'] = filters.sobel(views['ao'][:,:,0]) + filters.sobel(views['normal'][:,:,0])
 
-        viewer_link = links.new(render_layers_node.outputs['UV'], viewer_node.inputs[0])
-        self.update_display(scene, viewer_node)
-        if write_to_disk:
-            bpy.data.images['Viewer Node'].save_render("object_out\\UV.png")
-            uv_scene = io.imread("object_out\\UV.png")
-        else:
-            uv_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
-            uv_scene = np.flip(np.reshape(uv_scene, (int(scene.render.resolution_y*(reso_percentage/100)), int(scene.render.resolution_x*(reso_percentage/100)), 4)), axis=0)
-
-        viewer_link = links.new(render_layers_node.outputs['AO'], viewer_node.inputs[0])
-        self.update_display(scene, viewer_node)
-        if write_to_disk:
-            bpy.data.images['Viewer Node'].save_render("object_out\\AO.png")
-            ao_scene = io.imread("object_out\\AO.png")
-        else:
-            ao_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
-            ao_scene = np.flip(np.reshape(ao_scene, (int(scene.render.resolution_y*(reso_percentage/100)), int(scene.render.resolution_x*(reso_percentage/100)), 4)), axis=0)
-
-        original_scene = io.imread("object_out\\Original.png")
-        edge_scene = filters.sobel(ao_scene[:,:,0] + normal_scene[:,:,0])
-
-        canvas = drawFeatures("object_out\\sketch.svg", edge_scene, ao_scene)
+        #start drawing
+        canvas = draw_features("object_out\\sketch.svg", views)
+        #draw the shading style chosen
         if shading_style == 'DIAG':
-            canvas = drawShadeDiagonal(canvas, original_scene, ao_scene, edge_scene, bands=no_shade_bands, interval=width_of_bands)
+            canvas = draw_shade_diagonal(canvas, views, bands=no_shade_bands, interval=width_of_bands)
         elif shading_style == 'HORIZ':
-            canvas = drawShadeHorizontal(canvas, original_scene, ao_scene, edge_scene, bands=no_shade_bands, interval=width_of_bands)
+            canvas = draw_shade_horizontal(canvas, views, bands=no_shade_bands, interval=width_of_bands)
         elif shading_style == 'VERT':
-            canvas = drawShadeVertical(canvas, original_scene, ao_scene, edge_scene, bands=no_shade_bands, interval=width_of_bands)
+            canvas = draw_shade_vertical(canvas, views, bands=no_shade_bands, interval=width_of_bands)
         elif shading_style == 'DOT':
-            canvas = drawShadeDotted(canvas, original_scene, ao_scene, edge_scene, bands=no_shade_bands, interval=width_of_bands)
+            canvas = draw_shade_dotted(canvas, views, bands=no_shade_bands, interval=width_of_bands)
+        elif shading_style == 'CONT':
+            canvas = draw_shade_stream(canvas, views, views['uv'][:,:,0], bands=no_shade_bands, interval=width_of_bands)
+            canvas = draw_shade_stream(canvas, views, views['uv'][:,:,1], bands=no_shade_bands, interval=width_of_bands)
+
         canvas.save()
 
         return {'FINISHED'}
@@ -103,3 +83,14 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         scene.node_tree.update_tag()
         scene.update()
         bpy.ops.render.render()
+
+    def get_view(self, view_name, viewer_node, render_layers_node, scene, reso_percentage, write_to_disk):
+        links = scene.node_tree.links
+        viewer_link = links.new(render_layers_node.outputs[view_name], viewer_node.inputs[0])
+        self.update_display(scene, viewer_node)
+        if write_to_disk:
+            bpy.data.images['Viewer Node'].save_render("object_out\\" + view_name +".png")
+            return io.imread("object_out\\" + view_name +".png")
+        else:
+            view_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
+            return np.flip(np.reshape(view_scene, (int(scene.render.resolution_y*(reso_percentage/100)), int(scene.render.resolution_x*(reso_percentage/100)), 4)), axis=0)
