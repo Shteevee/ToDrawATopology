@@ -161,6 +161,16 @@ class walkNeighbourhoodTest(unittest.TestCase):
         target = []
         self.assertEqual(coords, target)
 
+    def test_walkNeighbourhood_ReturnsPointsForSinglePixel(self):
+        image = np.zeros((5,5))
+        image[1,1] = 255
+
+        coords = walkNeighbourhood(image)
+
+        target = [[np.array([1,1])]]
+        results = list(map(lambda x, y: np.array_equal(x,y), coords[0], target[0]))
+        self.assertTrue(np.array_equal(coords, target))
+
     def test_walkNeighbourhood_ReturnsPointsForSquareImage(self):
         image = np.zeros((5,5))
         image[1,1] = 255
