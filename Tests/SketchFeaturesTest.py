@@ -1,7 +1,10 @@
 import unittest
 import sys
 sys.path.append("..")
-from SketchFeatures import *
+try:
+    from sketch_features import *
+except:
+    from .sketch_features import *
 
 class findMajorAnchorsTest(unittest.TestCase):
 

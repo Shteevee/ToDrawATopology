@@ -10,7 +10,6 @@ bl_info = {
 
 import sys
 sys.path.append("../")
-
 import bpy
 
 from .export_components_operator import ExportComponentImagesOperator
@@ -25,10 +24,11 @@ def register():
     bpy.utils.register_class(ToDrawATopologyPanel)
 
 def unregister():
+    bpy.utils.unregister_class(PanelFeatures)
     bpy.utils.unregister_class(ExportComponentImagesOperator)
     bpy.utils.unregister_class(ExportSvgSceneOperator)
     bpy.utils.unregister_class(ToDrawATopologyPanel)
-    del bpy.types.Scene.my_tool
+    del bpy.types.Scene.panel_features
 
 if __name__ == "__main__":
     register()
