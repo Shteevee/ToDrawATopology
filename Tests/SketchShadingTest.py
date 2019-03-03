@@ -1,10 +1,7 @@
 import unittest
 import sys
 sys.path.append("..")
-try:
-    from sketch_shading import *
-except:
-    from .sketch_shading import *
+from drawing.sketch_shading import *
 from MockPath import MockPath
 
 class clean_paths_test(unittest.TestCase):

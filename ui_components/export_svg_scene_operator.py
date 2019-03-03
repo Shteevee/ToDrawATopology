@@ -1,5 +1,5 @@
 import bpy
-from .drawing_api import *
+from drawing_a_topology.drawing.drawing_api import *
 from skimage import filters, io, exposure
 
 class ExportSvgSceneOperator(bpy.types.Operator):
