@@ -60,7 +60,7 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         views['edge'] = filters.sobel(views['ao'][:,:,0]) + filters.sobel(views['normal'][:,:,0])
 
         #start drawing
-        canvas = draw_features("object_out\\sketch.svg", views)
+        canvas = draw_features("object_out/sketch.svg", views)
         #draw the shading style chosen
         if shading_style == 'DIAG':
             canvas = draw_shade_diagonal(canvas, views, bands=no_shade_bands, interval=width_of_bands)
@@ -89,8 +89,8 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         viewer_link = links.new(render_layers_node.outputs[view_name], viewer_node.inputs[0])
         self.update_display(scene, viewer_node)
         if write_to_disk:
-            bpy.data.images['Viewer Node'].save_render("object_out\\" + view_name +".png")
-            return io.imread("object_out\\" + view_name +".png")
+            bpy.data.images['Viewer Node'].save_render("object_out/" + view_name +".png")
+            return io.imread("object_out/" + view_name +".png")
         else:
             view_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
             return np.flip(np.reshape(view_scene, (int(scene.render.resolution_y*(reso_percentage/100)), int(scene.render.resolution_x*(reso_percentage/100)), 4)), axis=0)
