@@ -4,9 +4,9 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 try:
-    from .sketch_features import find_major_anchors
-except:
-    from sketch_features import find_major_anchors
+    from drawing.sketch_features import find_major_anchors
+except ImportError:
+    from drawing_a_topology.drawing.sketch_features import find_major_anchors
 
 def get_shaded_area(views, threshold=24):
     original_shade = morphology.erosion(np.copy(views['original'])[:,:,0] - views['edge'])
