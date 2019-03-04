@@ -33,15 +33,9 @@ install:
 
   # now create a symlink to the addon within blenders addons directory
   # this is important, because otherwhise blender would not be able to load the addon
-  - sudo ln -s ${PWD}/drawing_a_topology ${PWD}/tmp/blender/2.78/scripts/addons/drawing_a_topology
-
-  - cd tmp/blender
+  - sudo ln -s ${PWD} ${PWD}/tmp/blender/2.78/scripts/addons/drawing_a_topology
 
   - ls
-
-  - cd ../..
-
-  - cd ${PWD}/tmp/blender/2.78/scripts/addons/drawing_a_topology
 
   - python project_setup.py install
 
