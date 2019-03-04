@@ -1,0 +1,40 @@
+language: python
+
+python:
+  - "3.5"
+
+before_install:
+  # update apt-gets repository sources
+  - sudo apt-get update -qq
+
+  # install blender from official sources.
+  # This will most propably install an outdated blender version,
+  # but it will resolve all system dependencies blender has to be able to run.
+  - sudo apt-get install blender
+
+install:
+  # create temp directory where we store a recent blender version
+  - mkdir tmp && cd tmp
+
+  # download the blender version you want to test against
+  - wget https://www.blender.org/download/Blender2.79/blender-2.79b-linux-glibc219-i686.tar.bz2
+
+  # Extract the archive
+  - tar jxf blender-2.79b-linux-glibc219-i686.tar.bz2
+
+  # rename the extracted folder to "blender" for easier reference
+  - mv blender-2.79b-linux-glibc219-i686 blender
+
+  # remove the archive, we do not need it anymore
+  - rm blender-2.79b-linux-glibc219-i686.tar.bz2
+
+  # go back to root directory
+  - cd ..
+
+  # now create a symlink to the addon within blenders addons directory
+  # this is important, because otherwhise blender would not be able to load the addon
+  - sudo ln -s ${PWD}/drawing_a_topology ${PWD}/tmp/blender/2.79/scripts/addons/drawing_a_topology
+
+  - cd tmp/blender/2.79/scripts/addons/drawing_a_topology
+
+script: python test_runner.py ./tmp/blender/blender

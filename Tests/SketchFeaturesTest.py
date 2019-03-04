@@ -1,7 +1,7 @@
 import unittest
 import sys
 sys.path.append("..")
-from drawing.sketch_features import *
+from drawing_a_topology.drawing.sketch_features import *
 
 class findMajorAnchorsTest(unittest.TestCase):
 
@@ -191,5 +191,11 @@ class walkNeighbourhoodTest(unittest.TestCase):
         results = list(map(lambda x, y: np.array_equal(x,y), coords[0], target[0]))
         self.assertTrue(np.array_equal(coords, target))
 
+
+def run_full_suite(classes):
+    for test_class in classes:
+        suite = unittest.defaultTestLoader.loadTestsFromTestCase(test_class)
+        unittest.TextTestRunner().run(suite)
+
 if __name__=="__main__":
-    unittest.main()
+    run_full_suite([findMajorAnchorsTest, getNeighboursTest, getUnwalkedCoordsTest, checkColinearTest, nextNeighbourTest, walkNeighbourhoodTest])
