@@ -35,6 +35,8 @@ install:
   # this is important, because otherwhise blender would not be able to load the addon
   - sudo ln -s ${PWD} ${PWD}/tmp/blender/2.78/scripts/addons/drawing_a_topology
 
+  - cd /tmp/blender/2.78/python/script/
+
   - ls
 
   - python project_setup.py /tmp/blender/2.78/python/script/pip install
