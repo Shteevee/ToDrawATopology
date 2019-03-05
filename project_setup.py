@@ -2,7 +2,7 @@ import subprocess
 import sys
 
 def main():
-    required_packages = ["numpy", "scikit-image", "matplotlib", "svgwrite"]
+    required_packages = ["scikit-image", "matplotlib", "svgwrite"]
     if len(sys.argv) > 2:
         pip_path = sys.argv[1]
     else:
