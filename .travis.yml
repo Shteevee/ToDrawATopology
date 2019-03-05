@@ -37,8 +37,10 @@ install:
 
   - tmp/blender/2.79/python/bin/python3.5m tmp/blender/2.79/python/lib/python3.5/ensurepip
   - tmp/blender/2.79/python/bin/pip3 install --upgrade pip
-  - tmp/blender/2.79/python/bin/pip3 show numpy
   - tmp/blender/2.79/python/bin/pip3 --version
+  - cd tmp/blender/2.79/python/bin
+  - ls
+  - cd ../../../../../
 
   - python project_setup.py "tmp/blender/2.79/python/bin/pip3" install
 
