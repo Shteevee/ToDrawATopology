@@ -40,9 +40,9 @@ install:
   - tmp/blender/2.79/python/bin/pip --version
   - cd ~
   - ls
-  - cd ~/bin
+  - cd ~/gopath
   - ls
-  - cd ~/build
+  - cd ~/build/Shteevee
   - ls
   - cd Shteevee/ToDrawATopology
 
