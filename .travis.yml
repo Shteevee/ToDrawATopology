@@ -38,7 +38,7 @@ install:
   - tmp/blender/2.79/python/bin/python3.5m tmp/blender/2.79/python/lib/python3.5/ensurepip
   - tmp/blender/2.79/python/bin/pip3 install --upgrade pip
   - tmp/blender/2.79/python/bin/pip --version
-  - cd ~
+  - cd ~/virtualenv
   - ls
   - cd Shteevee/ToDrawATopology
 
