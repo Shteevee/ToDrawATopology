@@ -35,12 +35,11 @@ install:
   # this is important, because otherwhise blender would not be able to load the addon
   - sudo ln -s ${PWD} ${PWD}/tmp/blender/2.78/scripts/addons/drawing_a_topology
 
+  - tmp/blender/2.78/python/bin/python3.5m tmp/blender/2.78/python/lib/python3.5/ensurepip
   - cd tmp/blender/2.78/python/bin
   - ls
   - cd ../../../../../
-
-  - tmp/blender/2.78/python/bin/python3.5m tmp/blender/2.78/python/lib/python3.5/ensurepip
-  - tmp/blender/2.78/python/bin/pip3 install --upgrade pip
+  - tmp/blender/2.78/python/bin/easy_install3.5 -U pip
   - tmp/blender/2.78/python/bin/pip3 --version
   - python project_setup.py "tmp/blender/2.78/python/bin/pip3" install
 
