@@ -43,6 +43,6 @@ install:
   - cd tmp/blender/2.78/python/bin
   - ls
   - cd ../../../../../
-  - python project_setup.py "/tmp/blender/2.78/python/bin/pip" install
+  - python project_setup.py "/tmp/blender/2.78/python/bin/pip3" install
 
 script: python test_runner.py ./tmp/blender/blender
