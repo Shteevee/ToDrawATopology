@@ -45,4 +45,4 @@ install:
 
   - python project_setup.py "tmp/blender/2.79/python/bin/pip" install
 
-script: python test_runner.py ./tmp/blender/blender
+script: ./tmp/blender/blender --addons drawing_a_topology -noaudio -b
