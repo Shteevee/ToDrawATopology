@@ -30,14 +30,13 @@ install:
 
   # go back to root directory
   - cd ..
-  - cd tmp/blender/
-  - ls
-  - cd ../../
+
   # now create a symlink to the addon within blenders addons directory
   # this is important, because otherwhise blender would not be able to load the addon
   - sudo ln -s ${PWD} ${PWD}/tmp/blender/2.79/scripts/addons/drawing_a_topology
 
   - tmp/blender/2.79/python/bin/python3.5m tmp/blender/2.79/python/lib/python3.5/ensurepip
+  - tmp/blender/2.79/python/bin/pip3 install --upgrade pip
   - python project_setup.py "tmp/blender/2.79/python/bin/pip3" install
 
 script: python test_runner.py ./tmp/blender/blender
