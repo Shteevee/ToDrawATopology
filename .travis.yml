@@ -39,7 +39,7 @@ install:
   - cd tmp/blender/2.78/python/bin
   - ls
   - cd ../../../../../
-  - tmp/blender/2.78/python/bin/easy_install-3.5 -U pip
+  - curl https://bootstrap.pypa.io/get-pip.py | tmp/blender/2.78/python/bin/python3.5m
   - tmp/blender/2.78/python/bin/pip3 --version
   - python project_setup.py "tmp/blender/2.78/python/bin/pip3" install
 
