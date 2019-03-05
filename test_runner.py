@@ -15,7 +15,7 @@ def main():
     for file in [f for f in listdir(test_path) if isfile(join(test_path, f))]:
         if file != __file__[2:]:
             print("\n" + test_path+file)
-            subprocess.call([blender_path,'-b', '-P', test_path+file])
+            subprocess.call([blender_path, '-noaudio','-b', '-P', test_path+file])
 
 if __name__ == "__main__":
     main()
