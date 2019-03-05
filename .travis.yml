@@ -43,7 +43,6 @@ install:
   - cd tmp/blender/2.78/python/bin
   - ls
   - cd ../../../../../
-  - /tmp/blender/2.78/python/bin/pip3.5 install numpy
-  - python project_setup.py "/tmp/blender/2.78/python/bin/pip3.5" install
+  - python project_setup.py "tmp/blender/2.78/python/bin/pip3" install
 
 script: python test_runner.py ./tmp/blender/blender
