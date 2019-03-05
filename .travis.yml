@@ -41,6 +41,7 @@ install:
 
   - tmp/blender/2.78/python/bin/python3.5m tmp/blender/2.78/python/lib/python3.5/ensurepip
   - tmp/blender/2.78/python/bin/pip3 install --upgrade pip
+  - tmp/blender/2.78/python/bin/pip3 --version
   - python project_setup.py "tmp/blender/2.78/python/bin/pip3" install
 
 script: python test_runner.py ./tmp/blender/blender
