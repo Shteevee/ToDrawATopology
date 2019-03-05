@@ -7,7 +7,7 @@ from os.path import isfile, join
 #run this from inside the testing directory to avoid looking for bpy (supplied by blender at normal runtime)
 def main():
     blender_path = '../../../../blender'
-    test_path = "tests/"
+    test_path = "Tests/"
 
     if len(sys.argv) > 1:
         blender_path = sys.argv[1]
