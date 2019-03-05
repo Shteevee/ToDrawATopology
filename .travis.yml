@@ -38,11 +38,13 @@ install:
   - tmp/blender/2.79/python/bin/python3.5m tmp/blender/2.79/python/lib/python3.5/ensurepip
   - tmp/blender/2.79/python/bin/pip3 install --upgrade pip
   - tmp/blender/2.79/python/bin/pip --version
-  - tmp/blender/2.79/python/bin/pip uninstall numpy
+  - tmp/blender/2.79/python/bin/pip uninstall
   - cd tmp/blender/2.79/python/bin
   - ls
   - cd ../../../../../
 
   - python project_setup.py "tmp/blender/2.79/python/bin/pip" install
 
-script: ./tmp/blender/blender --addons drawing_a_topology -noaudio -b
+script:
+  - ./tmp/blender/blender --addons drawing_a_topology -noaudio -b
+  - python test_runner.py ./tmp/blender/blender
