@@ -37,13 +37,7 @@ install:
 
   - tmp/blender/2.79/python/bin/python3.5m tmp/blender/2.79/python/lib/python3.5/ensurepip
   - tmp/blender/2.79/python/bin/pip3 install --upgrade pip
-  - tmp/blender/2.79/python/bin/pip --version
-  - cd ~
-  - ls
-  - cd ~/gopath/bin
-  - ls
-  - cd ~/build/Shteevee
-  - ls
+
   - cd ~/build/Shteevee/ToDrawATopology
   #problem installing numpy because outdated gcc is used and can't compile for use with blender, see: https://stackoverflow.com/questions/37713262/numpy-in-blender-having-a-lot-of-trouble
   - python project_setup.py "tmp/blender/2.79/python/bin/pip" install
