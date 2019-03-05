@@ -38,10 +38,9 @@ install:
   - tmp/blender/2.79/python/bin/python3.5m tmp/blender/2.79/python/lib/python3.5/ensurepip
   - tmp/blender/2.79/python/bin/pip3 install --upgrade pip
   - tmp/blender/2.79/python/bin/pip --version
-  - tmp/blender/2.79/python/bin/pip uninstall
-  - cd tmp/blender/2.79/python/bin
+  - cd ~
   - ls
-  - cd ../../../../../
+  - cd Shteevee/ToDrawATopology
 
   - python project_setup.py "tmp/blender/2.79/python/bin/pip" install
 
