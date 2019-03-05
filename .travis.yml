@@ -42,6 +42,6 @@ install:
   - ls
   - cd ../../../../../
 
-  - python project_setup.py "tmp/blender/2.79/python/bin/pip3" install
+  - python project_setup.py "tmp/blender/2.79/python/bin/pip" install
 
 script: python test_runner.py ./tmp/blender/blender
