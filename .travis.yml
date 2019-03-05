@@ -40,6 +40,6 @@ install:
   - cd ../../../../../
 
   - tmp/blender/2.78/python/bin/python3.5m tmp/blender/2.78/python/lib/python3.5/ensurepip
-  - python project_setup.py "/tmp/blender/2.78/python/lib/python3.5/pip" install
+  - python project_setup.py "/tmp/blender/2.78/python/bin/pip" install
 
 script: python test_runner.py ./tmp/blender/blender
