@@ -1,8 +1,8 @@
 import unittest
 import sys
 sys.path.append("..")
-from SketchShading import *
-from MockPath import MockPath
+from drawing_a_topology.drawing.sketch_shading import *
+from drawing_a_topology.tests.MockPath import MockPath
 
 class clean_paths_test(unittest.TestCase):
 
@@ -42,5 +42,10 @@ class stitch_paths_test(unittest.TestCase):
 
         self.assertEqual(result,[])
 
+def run_full_suite(classes):
+    for test_class in classes:
+        suite = unittest.defaultTestLoader.loadTestsFromTestCase(test_class)
+        unittest.TextTestRunner().run(suite)
+
 if __name__=="__main__":
-    unittest.main()
+    run_full_suite([clean_paths_test, stitch_paths_test])

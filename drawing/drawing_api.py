@@ -1,8 +1,8 @@
 import numpy as np
 from skimage import filters
-from .SketchShading import *
-from .SketchFeatures import *
-from .SketchCanvas import *
+from .sketch_features import *
+from .sketch_shading import *
+from .sketch_canvas import *
 
 def draw_shade_horizontal(canvas, views, bands=3, interval=30):
     current_band = 1
