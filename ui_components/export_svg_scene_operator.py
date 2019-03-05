@@ -51,7 +51,6 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         comp_link = links.new(render_layers_node.outputs[0], comp_node.inputs[0])
 
         #get the views from the nodes
-
         views = dict()
         views['original'] = self.get_view('Image', viewer_node, render_layers_node, scene, reso_percentage, True)
         views['normal'] = self.get_view('Normal', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
@@ -84,6 +83,7 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         scene.update()
         bpy.ops.render.render()
 
+    #gets a view from the node tree, given its name 
     def get_view(self, view_name, viewer_node, render_layers_node, scene, reso_percentage, write_to_disk):
         links = scene.node_tree.links
         viewer_link = links.new(render_layers_node.outputs[view_name], viewer_node.inputs[0])
