@@ -35,11 +35,11 @@ install:
   # this is important, because otherwhise blender would not be able to load the addon
   - sudo ln -s ${PWD} ${PWD}/tmp/blender/2.78/scripts/addons/drawing_a_topology
 
-  - cd tmp/blender/2.78/python/lib/python3.5
+  - cd tmp/blender/2.78/python/bin
   - ls
-  - cd ../../../../../../
+  - cd ../../../../../
 
-  - tmp/blender/2.78/python/bin/python -m ensurepip
+  - tmp/blender/2.78/python/bin/python3.5m tmp/blender/2.78/python/lib/python3.5/ensurepip
   - python project_setup.py "/tmp/blender/2.78/python/lib/python3.5/pip" install
 
 script: python test_runner.py ./tmp/blender/blender
