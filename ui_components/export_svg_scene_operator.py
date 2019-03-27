@@ -1,7 +1,6 @@
 import bpy
 from drawing_a_topology.drawing.drawing_api import *
 from skimage import filters, io, exposure
-import timeit
 
 class ExportSvgSceneOperator(bpy.types.Operator):
     """"Export an SVG drawing of the scene"""
