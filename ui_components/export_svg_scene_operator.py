@@ -1,6 +1,7 @@
 import bpy
 from drawing_a_topology.drawing.drawing_api import *
 from skimage import filters, io, exposure
+from os import path, makedirs
 
 class ExportSvgSceneOperator(bpy.types.Operator):
     """"Export an SVG drawing of the scene"""
@@ -61,6 +62,8 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         #start drawing
         write_path = bpy.data.scenes['Scene'].render.filepath
         if write_path == "/tmp\\":
+            if not path.exists('object_out'):
+                makedirs('object_out')
             canvas = draw_features("object_out/sketch.svg", views)
         else:
             canvas = draw_features(write_path+"sketch.svg", views)
