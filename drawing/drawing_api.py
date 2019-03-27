@@ -5,6 +5,7 @@ from .sketch_shading import *
 from .sketch_canvas import *
 
 def draw_shade_horizontal(canvas, views, bands=3, interval=30):
+    """Adds horizontal shading to a canvas with features"""
     current_band = 1
     for shade in get_all_shade_bands(views, bands, interval):
         shade = apply_horizontal_effect(shade, views['edge'], 2**current_band)
@@ -15,6 +16,7 @@ def draw_shade_horizontal(canvas, views, bands=3, interval=30):
     return canvas
 
 def draw_shade_vertical(canvas, views, bands=3, interval=30):
+    """Adds vertical shading to a canvas with features"""
     current_band = 1
     for shade in get_all_shade_bands(views, bands, interval):
         shade = apply_vertical_effect(shade, views['edge'], 2**current_band)
@@ -25,6 +27,7 @@ def draw_shade_vertical(canvas, views, bands=3, interval=30):
     return canvas
 
 def draw_shade_diagonal(canvas, views, bands=3, interval=30):
+    """Adds diagonal shading to a canvas with features"""
     current_band = 2
     for shade in get_all_shade_bands(views, interval):
         shade = apply_diagonal_effect(shade, views['edge'], 2**current_band)
@@ -37,6 +40,7 @@ def draw_shade_diagonal(canvas, views, bands=3, interval=30):
     return canvas
 
 def draw_shade_dotted(canvas, views, bands=3, interval=30):
+    """Adds stippled shading to a canvas with features"""
     current_band = 1
     for shade in get_all_shade_bands(views, bands, interval):
         shade = apply_dotted_effect(shade, views['edge'], current_band-1)
@@ -47,6 +51,7 @@ def draw_shade_dotted(canvas, views, bands=3, interval=30):
     return canvas
 
 def draw_features(name, views):
+    """Creates a canvas and draws features on it"""
     pointToDraw = walk_neighbourhood(np.flip(np.rot90(views['edge']), axis=0))
     canvas = init_canvas(name)
     pointToDraw = find_major_anchors(pointToDraw)
@@ -59,6 +64,7 @@ def draw_features(name, views):
     return canvas
 
 def draw_shade_stream(canvas, views, uv_component, bands=3, interval=30):
+    """Draws contoured hatching on to canvas"""
     if np.all(uv_component==0):
         return canvas
 

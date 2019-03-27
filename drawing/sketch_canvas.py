@@ -2,6 +2,7 @@ import numpy as np
 import svgwrite
 
 def guided_sketch(dwg, points, thickness=1):
+    """Creates a smooth stroke from a path"""
     velocity_base = 0.1
     acceleration = 0.4
     turn_rate = 2
@@ -26,6 +27,7 @@ def guided_sketch(dwg, points, thickness=1):
     return dwg
 
 def dotted_shade_sketch(dwg, points, radius=0.5):
+    """Takes a list of points and applies stipples"""
     for point in points:
         dwg.add(dwg.circle(center=(float(point[0])+np.random.uniform(-0.5,0.5),float(point[1])+np.random.uniform(-0.5,0.5)), r=radius))
 

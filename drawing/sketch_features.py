@@ -2,11 +2,13 @@ import numpy as np
 from skimage import exposure, morphology
 
 def get_unwalked_coords(image):
+    """Gets co-ordinates that have not yet been walked"""
     coords = np.where(image == 1)
     zipped_coords = np.dstack(coords)
     return zipped_coords.reshape(zipped_coords.shape[1], zipped_coords.shape[2])
 
 def get_neighbours(currentPixel, centrePoint):
+    """Gets the neighbours, ordered by furthest from centre"""
     neighbours = np.array([[currentPixel[0]+1, currentPixel[1]+1],
             [currentPixel[0]+1, currentPixel[1]],
             [currentPixel[0]+1, currentPixel[1]-1],
@@ -22,6 +24,7 @@ def get_neighbours(currentPixel, centrePoint):
     return neighbours
 
 def next_neighbour(currentPixel, thinned_image, centrePoint):
+    """Returns the next neighbour, or invalid if none"""
     neighbours = get_neighbours(currentPixel, centrePoint)
     for n in neighbours:
         n = np.array(n).astype(int)
@@ -37,12 +40,14 @@ def next_neighbour(currentPixel, thinned_image, centrePoint):
     return np.array([-1,-1])
 
 def walk_neighbourhood(image):
+    """Walk the neighbourhood of an edge detected image"""
     thinned_image = morphology.thin(np.where(image<0.1, 0, 1))
     thinned_image = np.where(thinned_image<0.1, 0, 1)
     centre = get_centre(thinned_image)
 
     try:
         totalPixels = exposure.histogram(thinned_image, nbins=2)[0][1]
+    #return an empty list if no pixels were found to draw
     except IndexError:
         return []
 
@@ -50,7 +55,6 @@ def walk_neighbourhood(image):
     walkingOrder = []
     index=-1
     while totalPixels > 0:
-
         if np.array_equal(currentPixel, np.array([-1, -1])):
             currentPixel = get_unwalked_coords(thinned_image)[0]
             walkingOrder.append([])
@@ -72,6 +76,7 @@ def get_centre(image):
 
 #Checking colinearity should probably be used here (maybe a recursive solution??)
 def find_major_anchors(points_list):
+    """Takes a list of paths and returns the reduced version"""
     for feature in points_list:
         changed = True
         #if the point set wasn't reduced then go to the next point set
