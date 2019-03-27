@@ -1,6 +1,7 @@
 import bpy
 from drawing_a_topology.drawing.drawing_api import *
 from skimage import filters, io, exposure
+from os import path, makedirs
 
 class ExportSvgSceneOperator(bpy.types.Operator):
     """"Export an SVG drawing of the scene"""
@@ -59,7 +60,13 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         views['edge'] = filters.sobel(views['ao'][:,:,0]) + filters.sobel(views['normal'][:,:,0])
 
         #start drawing
-        canvas = draw_features("object_out/sketch.svg", views)
+        write_path = bpy.data.scenes['Scene'].render.filepath
+        if write_path == "/tmp\\":
+            if not path.exists('object_out'):
+                makedirs('object_out')
+            canvas = draw_features("object_out/sketch.svg", views)
+        else:
+            canvas = draw_features(write_path+"sketch.svg", views)
         #draw the shading style chosen
         if shading_style == 'DIAG':
             canvas = draw_shade_diagonal(canvas, views, bands=no_shade_bands, interval=width_of_bands)
@@ -83,7 +90,7 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         scene.update()
         bpy.ops.render.render()
 
-    #gets a view from the node tree, given its name 
+    #gets a view from the node tree, given its name
     def get_view(self, view_name, viewer_node, render_layers_node, scene, reso_percentage, write_to_disk):
         links = scene.node_tree.links
         viewer_link = links.new(render_layers_node.outputs[view_name], viewer_node.inputs[0])

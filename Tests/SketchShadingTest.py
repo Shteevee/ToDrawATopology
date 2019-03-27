@@ -2,7 +2,7 @@ import unittest
 import sys
 sys.path.append("..")
 from drawing_a_topology.drawing.sketch_shading import *
-from drawing_a_topology.tests.MockPath import MockPath
+from drawing_a_topology.Tests.MockPath import MockPath
 
 class clean_paths_test(unittest.TestCase):
 
