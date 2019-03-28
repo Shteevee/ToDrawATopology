@@ -3,6 +3,12 @@ import sys
 
 def main():
     required_packages = ["numpy<1.16","scikit-image", "matplotlib", "svgwrite", "scipy"]
+    try:
+        subprocess.call(["../../../python/bin/python", '-m', 'ensurepip'])
+    #lazy OS check
+    except:
+        subprocess.call(["../../../python/bin/python3.5m", '-m', 'ensurepip'])
+
     if len(sys.argv) > 2:
         pip_path = sys.argv[1]
     else:
