@@ -51,22 +51,17 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         links = tree.links
         comp_link = links.new(render_layers_node.outputs[0], comp_node.inputs[0])
 
+        write_path = bpy.data.scenes['Scene'].render.filepath
         #get the views from the nodes
         views = dict()
-        views['original'] = self.get_view('Image', viewer_node, render_layers_node, scene, reso_percentage, True)
-        views['normal'] = self.get_view('Normal', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
-        views['uv'] = self.get_view('UV', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
-        views['ao'] = self.get_view('AO', viewer_node, render_layers_node, scene, reso_percentage, write_to_disk)
+        views['original'] = self.get_view('Image', viewer_node, render_layers_node, scene, reso_percentage, write_path, True)
+        views['normal'] = self.get_view('Normal', viewer_node, render_layers_node, scene, reso_percentage, write_path, write_to_disk)
+        views['uv'] = self.get_view('UV', viewer_node, render_layers_node, scene, reso_percentage, write_path, write_to_disk)
+        views['ao'] = self.get_view('AO', viewer_node, render_layers_node, scene, reso_percentage, write_path, write_to_disk)
         views['edge'] = filters.sobel(views['ao'][:,:,0]) + filters.sobel(views['normal'][:,:,0])
 
         #start drawing
-        write_path = bpy.data.scenes['Scene'].render.filepath
-        if write_path == "/tmp\\":
-            if not path.exists('object_out'):
-                makedirs('object_out')
-            canvas = draw_features("object_out/sketch.svg", views)
-        else:
-            canvas = draw_features(write_path+"sketch.svg", views)
+        canvas = draw_features(write_path+"sketch.svg", views)
         #draw the shading style chosen
         if shading_style == 'DIAG':
             canvas = draw_shade_diagonal(canvas, views, bands=no_shade_bands, interval=width_of_bands)
@@ -91,13 +86,13 @@ class ExportSvgSceneOperator(bpy.types.Operator):
         bpy.ops.render.render()
 
     #gets a view from the node tree, given its name
-    def get_view(self, view_name, viewer_node, render_layers_node, scene, reso_percentage, write_to_disk):
+    def get_view(self, view_name, viewer_node, render_layers_node, scene, reso_percentage, write_path, write_to_disk):
         links = scene.node_tree.links
         viewer_link = links.new(render_layers_node.outputs[view_name], viewer_node.inputs[0])
         self.update_display(scene, viewer_node)
         if write_to_disk:
-            bpy.data.images['Viewer Node'].save_render("object_out/" + view_name +".png")
-            return io.imread("object_out/" + view_name +".png")
+            bpy.data.images['Viewer Node'].save_render(write_path + view_name +".png")
+            return io.imread(write_path + view_name +".png")
         else:
             view_scene = np.asarray(bpy.data.images['Viewer Node'].pixels)
             return np.flip(np.reshape(view_scene, (int(scene.render.resolution_y*(reso_percentage/100)), int(scene.render.resolution_x*(reso_percentage/100)), 4)), axis=0)
