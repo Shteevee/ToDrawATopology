@@ -16,7 +16,7 @@ This project is a plug-in for Blender to allow users to create non-photorealisti
     <figcaption>Suzanne with stippled shading</figcaption>
     <img src="gallery/mobiusLandscape.svg" width=50%>
     <figcaption>Mobius with stippled shading</figcaption>
-    <img src="gallery/cube&torus.svg" width=30%>
+    <img src="gallery/cube&torus.svg" width=40%>
     <figcaption>Torus above cube with stippled shading</figcaption>
 </figure>
 
