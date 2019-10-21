@@ -7,27 +7,15 @@ This project is a plug-in for Blender to allow users to create non-photorealisti
 ## Gallery
 <div align="center">
     <img src="gallery/kleinDiag.svg" width=30%>
-    <figcaption size=11px>Klein bottle with diagonal shading</figcaption>
-</div>
-<div align="center">
     <img src="gallery/stippledKlein3.svg" width=30%>
-    <figcaption>Klein bottle with stippled shading</figcaption>
-</div>
-<div align="center">
     <img src="gallery/contourKlein.svg" width=30%>
-    <figcaption>Klein bottle with contoured shading</figcaption>
 </div>
 <div align="center">
     <img src="gallery/suzanneStippled.svg" width=40%>
-    <figcaption>Suzanne with stippled shading</figcaption>
-</div>
-<div align="center">
     <img src="gallery/mobiusLandscape.svg" width=50%>
-    <figcaption>Mobius with stippled shading</figcaption>
 </div>
 <div align="center">
     <img src="gallery/cube&torus.svg" width=40%>
-    <figcaption>Torus above cube with stippled shading</figcaption>
 </div>
 
 ## Installation
