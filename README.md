@@ -1,5 +1,27 @@
 # ToDrawATopology [![Build Status](https://travis-ci.com/Shteevee/ToDrawATopology.svg?token=qze7gzxfs4nesEue56KP&branch=master)](https://travis-ci.com/Shteevee/ToDrawATopology)
 
+## About
+
+This project is a plug-in for Blender to allow users to create non-photorealistic renders of modeled objects. A variety of shading styles are available to render objects with. Renders are produced in the SVG format.
+
+## Gallery
+<center>
+    <figure>
+        <img src="gallery/kleinDiag.svg" width=30%>
+        <figcaption size=11px>Klein bottle with diagonal shading</figcaption>
+        <img src="gallery/stippledKlein3.svg" width=30%>
+        <figcaption>Klein bottle with stippled shading</figcaption>
+        <img src="gallery/contourKlein.svg" width=30%>
+        <figcaption>Klein bottle with contoured shading</figcaption>
+        <img src="gallery/suzanneStippled.svg" width=40%>
+        <figcaption>Suzanne with stippled shading</figcaption>
+        <img src="gallery/mobiusLandscape.svg" width=50%>
+        <figcaption>Mobius with stippled shading</figcaption>
+        <img src="gallery/cube&torus.svg" width=30%>
+        <figcaption>Torus above cube with stippled shading</figcaption>
+    </figure>
+</center>
+
 ## Installation
 * I recommend installing this on Blender 2.79b as it is the only tested version.
 
